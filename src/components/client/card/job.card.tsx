@@ -109,9 +109,13 @@ const JobCard = (props: IProps) => {
 
 
                         {(!displayJob || displayJob && displayJob.length === 0)
-                            && !isLoading &&
+                            &&
                             <div className={styles["empty"]}>
-                                <Empty description="Không có dữ liệu" />
+                                {isLoading ?
+                                    <Spin />
+                                    :
+                                    <Empty description="Không có dữ liệu" />
+                                }
                             </div>
                         }
                     </Row>

@@ -9,7 +9,6 @@ import { DollarOutlined, EnvironmentOutlined, HistoryOutlined } from "@ant-desig
 import { getLocationName } from "@/config/utils";
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
-import ApplyModal from "@/components/client/modal/apply.modal";
 dayjs.extend(relativeTime)
 
 
@@ -17,8 +16,7 @@ const ClientJobDetailPage = (props: any) => {
     const [jobDetail, setJobDetail] = useState<IJob | null>(null);
     const [isLoading, setIsLoading] = useState<boolean>(false);
 
-    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-
+    const navigate = useNavigate();
     let location = useLocation();
     let params = new URLSearchParams(location.search);
     const id = params?.get("id"); // job id
@@ -50,10 +48,7 @@ const ClientJobDetailPage = (props: any) => {
                                     {jobDetail.name}
                                 </div>
                                 <div>
-                                    <button
-                                        onClick={() => setIsModalOpen(true)}
-                                        className={styles["btn-apply"]}
-                                    >Apply Now</button>
+                                    <button className={styles["btn-apply"]}>Apply Now</button>
                                 </div>
                                 <Divider />
                                 <div className={styles["skills"]}>
@@ -83,7 +78,7 @@ const ClientJobDetailPage = (props: any) => {
                                 <div className={styles["company"]}>
                                     <div>
                                         <img
-                                            alt="example"
+                                            alt="detail-company"
                                             src={`${import.meta.env.VITE_BACKEND_URL}/images/company/${jobDetail.company?.logo}`}
                                         />
                                     </div>
@@ -96,11 +91,6 @@ const ClientJobDetailPage = (props: any) => {
                     }
                 </Row>
             }
-            <ApplyModal
-                isModalOpen={isModalOpen}
-                setIsModalOpen={setIsModalOpen}
-                jobDetail={jobDetail}
-            />
         </div>
     )
 }
