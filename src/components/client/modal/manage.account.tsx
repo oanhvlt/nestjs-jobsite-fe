@@ -1,14 +1,11 @@
-import { Button, Col, Form, Modal, Row, Select, Table, Tabs, message, notification } from "antd";
+import { Modal, Table, Tabs } from "antd";
 import { isMobile } from "react-device-detect";
 import type { TabsProps } from 'antd';
 import { IResume } from "@/types/backend";
 import { useState, useEffect } from 'react';
-import { callFetchResumeByUser, callGetSubscriberSkills, callUpdateSubscriber } from "@/config/api";
+import { callFetchResumeByUser } from "@/config/api";
 import type { ColumnsType } from 'antd/es/table';
 import dayjs from 'dayjs';
-import { MonitorOutlined } from "@ant-design/icons";
-import { SKILLS_LIST } from "@/config/utils";
-import { useAppSelector } from "@/redux/hooks";
 
 interface IProps {
     open: boolean;
@@ -101,76 +98,6 @@ const UserUpdateInfo = (props: any) => {
     )
 }
 
-const JobByEmail = (props: any) => {
-    const [form] = Form.useForm();
-    const user = useAppSelector(state => state.account.user);
-
-    useEffect(() => {
-        const init = async () => {
-            const res = await callGetSubscriberSkills();
-            if (res && res.data) {
-                form.setFieldValue("skills", res.data.skills);
-            }
-        }
-        init();
-    }, [])
-
-    const onFinish = async (values: any) => {
-        const { skills } = values;
-        const res = await callUpdateSubscriber({
-            email: user.email,
-            name: user.name,
-            skills: skills ? skills : []
-        });
-        if (res.data) {
-            message.success("Cập nhật thông tin thành công");
-        } else {
-            notification.error({
-                message: 'Có lỗi xảy ra',
-                description: res.message
-            });
-        }
-
-    }
-
-    return (
-        <>
-            <Form
-                onFinish={onFinish}
-                form={form}
-            >
-                <Row gutter={[20, 20]}>
-                    <Col span={24}>
-                        <Form.Item
-                            label={"Kỹ năng"}
-                            name={"skills"}
-                            rules={[{ required: true, message: 'Vui lòng chọn ít nhất 1 skill!' }]}
-
-                        >
-                            <Select
-                                mode="multiple"
-                                allowClear
-                                showArrow={false}
-                                style={{ width: '100%' }}
-                                placeholder={
-                                    <>
-                                        <MonitorOutlined /> Tìm theo kỹ năng...
-                                    </>
-                                }
-                                optionLabelProp="label"
-                                options={SKILLS_LIST}
-                            />
-                        </Form.Item>
-                    </Col>
-                    <Col span={24}>
-                        <Button onClick={() => form.submit()}>Cập nhật</Button>
-                    </Col>
-                </Row>
-            </Form>
-        </>
-    )
-}
-
 const ManageAccount = (props: IProps) => {
     const { open, onClose } = props;
 
@@ -184,11 +111,7 @@ const ManageAccount = (props: IProps) => {
             label: `Rải CV`,
             children: <UserResume />,
         },
-        {
-            key: 'email-by-skills',
-            label: `Nhận Jobs qua Email`,
-            children: <JobByEmail />,
-        },
+
         {
             key: 'user-update-info',
             label: `Cập nhật thông tin`,
